@@ -1,19 +1,52 @@
 package br.com.alura.screenmatch.model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table (name = "episodios")
 public class Episodio {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
     private String titulo;
-    private Integer numero;
+    private Integer numeroEpisodio;
     private Double avaliacao;
-    private LocalDate dataDeLancamento;
+    private LocalDate dataLancamento;
+
+    @ManyToOne
+    private Serie serie;
+
+    public Episodio(){}
     
     public Episodio(Integer numeroTemporada, DadosEpisodio dadosEpisodio){
         this.temporada = numeroTemporada;
         this.titulo = dadosEpisodio.titulo();
         this.numeroEpisodio = dadosEpisodio.numero();
-        this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao());
-        this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());
+        
+        try{
+        this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao()); // o valueOf lê a String e converte ela para um double
+        } catch (NumberFormatException ex){
+            this.avaliacao = 0.0;
+        }
+
+        try{
+            this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());
+        } catch(DateTimeParseException ex){
+            this.dataLancamento = null;
+        }
     }
+
+    
     
     public Integer getTemporada() {
         return temporada;
@@ -27,11 +60,11 @@ public class Episodio {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-    public Integer getNumero() {
-        return numero;
+    public Integer getNumeroEpisodio() {
+        return numeroEpisodio;
     }
-    public void setNumero(Integer numero) {
-        this.numero = numero;
+    public void setNumeroEpisodio(Integer numeroEpisodio) {
+        this.numeroEpisodio = numeroEpisodio;
     }
     public Double getAvaliacao() {
         return avaliacao;
@@ -39,11 +72,38 @@ public class Episodio {
     public void setAvaliacao(Double avaliacao) {
         this.avaliacao = avaliacao;
     }
-    public LocalDate getDataDeLancamento() {
-        return dataDeLancamento;
+    public LocalDate getDataLancamento() {
+        return dataLancamento;
     }
-    public void setDataDeLancamento(LocalDate dataDeLancamento) {
-        this.dataDeLancamento = dataDeLancamento;
+    public void setDataLancamento(LocalDate dataLancamento) {
+        this.dataLancamento = dataLancamento;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
+
+    @Override
+    public String toString() {
+        return "temporada = " + temporada + 
+                System.lineSeparator() + "titulo = " + titulo + 
+                System.lineSeparator() + "numeroEpisodio = " + numeroEpisodio + 
+                System.lineSeparator() + "avaliacao = " + avaliacao + 
+                System.lineSeparator() + "dataLancamento = " + dataLancamento;
+    }
+
     
+        
 }
